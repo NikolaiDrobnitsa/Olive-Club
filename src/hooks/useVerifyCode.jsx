@@ -21,7 +21,7 @@ function useVerify() {
     // 'http://localhost:3000/api/form/verify',
 
     try {
-      await axios.post('http://localhost:3000/api/form/verify', {
+      await axios.post('https://www.familyoliveclub.com/api/form/verify', {
         email,
         code,
       });
@@ -37,7 +37,11 @@ function useVerify() {
     }
   };
 
+  // https://www.familyoliveclub.com/api/resendCode
+  // http://localhost:3000/api/resendCode
+
   const handleResendCode = async (email, setResendDisabled) => {
+    setResendDisabled(true);
     try {
       await axios.post('https://www.familyoliveclub.com/api/resendCode', {
         email,
@@ -50,10 +54,43 @@ function useVerify() {
     }
   };
 
+  const handleGetVerifyUsers = async (setEmail) => {
+
+    const savedEmail = localStorage.getItem("email");
+
+    if (!savedEmail) {
+      navigate("/form/registration");
+      return;
+    }
+
+    setEmail(savedEmail);
+
+    // http://localhost:3000/api/getVerifyUser
+    // https://www.familyoliveclub.com/api/getVerifyUser
+
+    axios
+      .get("https://www.familyoliveclub.com/api/getVerifyUser", {
+        params: { email: savedEmail }
+      })
+      .then(res => {
+        const isVerified = res.data?.isVerified;
+
+        if (isVerified) {
+          localStorage.removeItem("email");
+          navigate("/survey");
+        }
+      })
+      .catch(err => {
+        console.error("Error with verify:", err);
+      });
+
+  }
+
 
   return {
     handleVerifyCode,
     handleResendCode,
+    handleGetVerifyUsers,
   };
 
 }

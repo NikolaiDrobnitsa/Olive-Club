@@ -1,57 +1,24 @@
-import axios from "axios";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import components from "../../../components/index";
 
-
-// Hooks
 import { useState, useEffect } from "react";
 import useSendTimer from "../../../hooks/useSendTimer";
 import useVerifyCode from "../../../hooks/useVerifyCode";
-
-
 
 export default function Verify() {
     const { t } = useTranslation();
     const [code, setCode] = useState('');
     const [email, setEmail] = useState('');
     const [timer, setTimer] = useState(0);
-    const navigate = useNavigate();
+    const { handleResendCode, handleVerifyCode, handleGetVerifyUsers } = useVerifyCode();
     const [resendDisabled, setResendDisabled] = useState(false);
 
-    useEffect(() => {
-        const savedEmail = localStorage.getItem("email");
-
-        if (!savedEmail) {
-            navigate("/form/registration");
-            return;
-        }
-
-        setEmail(savedEmail);
-
-        axios
-          .get("https://www.familyoliveclub.com/api/getVerifyUser", {
-              params: { email: savedEmail }
-          })
-          .then(res => {
-              const isVerified = res.data?.isVerified;
-
-              if (isVerified) {
-                  localStorage.removeItem("email");
-                  navigate("/survey");
-              }
-          })
-          .catch(err => {
-              console.error("Error with verify:", err);
-          });
-
-    }, []);
-
     useSendTimer(setTimer, resendDisabled, setResendDisabled);
-    const {
-        handleResendCode,
-        handleVerifyCode,
-    } = useVerifyCode();
+
+    useEffect(() => {
+        handleGetVerifyUsers(setEmail)
+    }, [])
+
 
     return (
         <form className="form-login"
@@ -84,7 +51,8 @@ export default function Verify() {
                         <components.Button
                           onClick={() => handleResendCode(email, setResendDisabled)}
                           disabled={resendDisabled}
-                          className={"form-button"}>{resendDisabled ? `${t("resendCode")} (${timer})` : t("resendCode")}</components.Button>
+                          className={"form-button"}>
+                            {resendDisabled ? `${t("resendCode")} (${timer})` : t("resendCode")}</components.Button>
                         <components.Button
                           type={"submit"}
                           className={"form-button"}>{t("confirm")}</components.Button>

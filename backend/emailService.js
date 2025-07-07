@@ -20,7 +20,7 @@ const emailService = async(email, code) => {
         to: email,
         subject: 'Confirm registration',
         text: `You code: ${code}`,
-        html: `<p>Ваш код подтверждения: ${code}</p>`,
+        html: `<p>${code}</p>`,
     }
 
     await transporter.sendMail(mailOptions);

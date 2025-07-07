@@ -6,6 +6,7 @@ function AdminSort({ sortOrder, setSortOrder }) {
   useEffect(() => {
     getUsers(sortOrder);
   }, [sortOrder]);
+
   return (
     <div>
       <select className="sort" name="sort" id="sort"

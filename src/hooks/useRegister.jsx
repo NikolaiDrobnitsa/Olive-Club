@@ -5,8 +5,6 @@ import useFormStore from "../store/FormStore";
 import useErrorStore from "../store/ErrorStore";
 import utils from "../utils/utils";
 
-import dayjs from 'dayjs';
-
 import { useNavigate } from "react-router-dom";
 import {useTranslation} from "react-i18next";
 
@@ -15,7 +13,7 @@ function useRegistration() {
   const navigate = useNavigate();
   const { removeValues } = useFormStore();
   const setUser = useUserStore((state) => state.setUser);
-  const { loading, setLoading } = useLoadingStore();
+  const { setLoading } = useLoadingStore();
   const { setError, clearError } = useErrorStore();
 
   const { i18n } = useTranslation();
@@ -49,7 +47,7 @@ function useRegistration() {
     // http://localhost:3000/api/form/registration
 
     try {
-      const res = await axios.post('http://localhost:3000/api/form/registration', dataToSend);
+      const res = await axios.post('https://www.familyoliveclub.com/api/form/registration', dataToSend);
       const userData = res.data.user;
 
       localStorage.setItem('email', form.email);

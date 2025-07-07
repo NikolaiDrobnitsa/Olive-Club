@@ -1,4 +1,4 @@
-export default function Button ({type, onClick, className, children, disabled = false}) {
+export default function Button ({type, onClick, className, children, disabled }) {
   return (
     <button
       type={type ? type : 'button'}
